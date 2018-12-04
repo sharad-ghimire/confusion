@@ -1,18 +1,20 @@
 import React, { Component } from 'react';
 import { View, FlatList } from 'react-native';
 import { ListItem } from 'react-native-elements';
-import logo from './images/buffet.png';
+// import logo from './images/buffet.png';
 
 const Menu = (props) => {
   //each element in the array will become an item that is supplied to this particular function that is rendered here
   const renderMenuItem = ({ item, index }) => {
     return (
       <ListItem
+        roundAvatar
         key={index}
         title={item.name}
         subtitle={item.description}
         hideChevron={true}
-        leftAvatar={{ source: require('./images/uthappizza.png') }}
+        onPress={() => props.onPress(item.id)}
+        avatar={{ source: require('./images/uthappizza.png') }}
       />
     );
   };

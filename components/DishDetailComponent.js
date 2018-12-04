@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, ScrollView, FlatList } from 'react-native';
 import { Card } from 'react-native-elements';
 import { DISHES } from '../shared/dishes';
+import { COMMENTS } from '../shared/comments';
 
 const RenderDish = (props) => {
   const dish = props.dish;
@@ -20,19 +21,54 @@ const RenderDish = (props) => {
   }
 };
 
+const RenderComments = (props) => {
+  const comments = props.comments;
+  const renderCommentItem = ({ item, index }) => {
+    return (
+      <View key={index} style={{ margin: 10 }}>
+        <Text style={{ fontSize: 15 }}>{item.comment}</Text>
+        <Text style={{ fontSize: 12 }}>{item.rating} Stars</Text>
+        <Text style={{ fontSize: 12 }}>{`--- ${item.author}, ${
+          item.date
+        }`}</Text>
+      </View>
+    );
+  };
+
+  return (
+    <Card title={`Comments`}>
+      <FlatList
+        data={comments}
+        renderItem={renderCommentItem}
+        keyExtractor={(item) => item.id.toString()}
+      />
+    </Card>
+  );
+};
+
 class DishDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      dishes: DISHES
+      dishes: DISHES,
+      comments: COMMENTS
     };
   }
   static navigationOptions = {
     title: 'Dish Detail'
   };
   render() {
-    const dishId = this.props.navigation.getParam('dishId', ''); //'' full back parameter
-    return <RenderDish dish={this.state.dishes[+dishId]} />; // + turns string to number
+    const dishId = this.props.navigation.getParam('dishId', '');
+    return (
+      <ScrollView>
+        <RenderDish dish={this.state.dishes[+dishId]} />
+        <RenderComments
+          comments={this.state.comments.filter(
+            (comment) => comment.dishId === dishId
+          )}
+        />
+      </ScrollView>
+    );
   }
 }
 
